@@ -39,6 +39,12 @@ _EMBEDDING_TYPES = {
     'glove.840B.300d': {
         'file': 'glove.840B.300d.txt',
         'url': 'http://nlp.stanford.edu/data/glove.840B.300d.zip'
+    },
+
+    'weibo.kol.200d.txt': {
+        'file': 'weibo.kol.200d.txt',
+        # put 'weibo.kol.200d.txt' into ~/.keras-text/embeddings 
+        'url': ''
     }
 }
 
@@ -59,7 +65,7 @@ def build_embedding_weights(word_index, embeddings_index):
     """Builds an embedding matrix for all words in vocab using embeddings_index
     """
     logger.info('Loading embeddings for all words in the corpus')
-    embedding_dim = embeddings_index.values()[0].shape[-1]
+    embedding_dim = list(embeddings_index.values())[0].shape[-1]
 
     # +1 since tokenizer words are indexed from 1. 0 is reserved for padding and unknown words.
     embedding_weights = np.zeros((len(word_index) + 1, embedding_dim))
