@@ -5,7 +5,6 @@ import logging
 import numpy as np
 from keras.utils.data_utils import get_file
 
-
 logger = logging.getLogger(__name__)
 _EMBEDDINGS_CACHE = dict()
 
@@ -41,7 +40,7 @@ _EMBEDDING_TYPES = {
         'url': 'http://nlp.stanford.edu/data/glove.840B.300d.zip'
     },
 
-    'weibo.kol.200d.txt': {
+    'weibo.kol.200d': {
         'file': 'weibo.kol.200d.txt',
         # put 'weibo.kol.200d.txt' into ~/.keras-text/embeddings 
         'url': ''
@@ -52,7 +51,7 @@ _EMBEDDING_TYPES = {
 def _build_embeddings_index(embeddings_path):
     logger.info('Building embeddings index...')
     index = {}
-    with open(embeddings_path, 'rb') as f:
+    with open(embeddings_path, mode='r', encoding="utf-8") as f:
         for line in f:
             values = line.split()
             word = values[0]
@@ -75,6 +74,8 @@ def build_embedding_weights(word_index, embeddings_index):
         if word_vector is not None:
             # Words not in embedding will be all zeros which can stand for padded words.
             embedding_weights[i] = word_vector
+        else:
+            logging.info(f"{word} is not in embeddings index")
 
     return embedding_weights
 
@@ -101,7 +102,7 @@ def get_embeddings_index(embedding_type='glove.42B.300d'):
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
 
-    file_path = get_file(embedding_type, origin=data_obj['url'], extract=True,
+    file_path = get_file(data_obj['file'], origin=data_obj['url'], extract=True,
                          cache_dir=cache_dir, cache_subdir='embeddings')
     file_path = os.path.join(os.path.dirname(file_path), data_obj['file'])
 
